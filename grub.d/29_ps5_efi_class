@@ -1,0 +1,4 @@
+#!/bin/sh
+# grub-ps5-theme: give the "UEFI Firmware Settings" entry its own icon class (efi)
+exec tail -n +4 $0
+set menuentry_id_option="--class efi --id"

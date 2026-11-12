@@ -1,0 +1,4 @@
+#!/bin/sh
+# grub-ps5-theme: reset the option set by 29_ps5_efi_class
+exec tail -n +4 $0
+set menuentry_id_option="--id"

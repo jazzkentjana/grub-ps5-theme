@@ -1,0 +1,55 @@
+#!/bin/sh
+# grub-ps5-theme: runs the stock 10_linux but prints the "Advanced options" submenu BEFORE the
+# main distro entry, adds "--class advanced" to the submenu (so the theme has a screen for it),
+# and adds echo lines to the main entry so the console shows text while the kernel loads.
+# 10_linux itself is switched off (no longer executable) so it does not run twice; this script
+# re-applies that on every update-grub, so package upgrades cannot bring it back.
+# Remove with ./uninstall.sh.
+set -e
+AWKPROG=$(cat <<'AWKEOF'
+# Prints the generated Linux menu with the "Advanced options" submenu BEFORE the main "Ubuntu" entry.
+# The submenu header gets "--class advanced" so the theme can show its own screen.
+# The main Ubuntu entry also gets echo lines, so the console shows text while the kernel loads.
+# If the expected layout is not found, the text is printed unchanged.
+BEGIN { st = 0 }
+{
+  if (st == 0) {
+    if ($0 ~ /^menuentry /) { st = 1; entry = $0 "\n"; next }
+    pre = pre $0 "\n"; next
+  }
+  if (st == 1) {
+    if ($0 ~ /^[ \t]+linux[ \t]/) {
+      v = $2; sub(/^.*vmlinuz-/, "", v)
+      entry = entry "\techo\t'Loading Linux " v " ...'\n"
+    } else if ($0 ~ /^[ \t]+initrd[ \t]/) {
+      entry = entry "\techo\t'Loading initial ramdisk ...'\n"
+    }
+    entry = entry $0 "\n"
+    if ($0 == "}") st = 2
+    next
+  }
+  if (st == 2) {
+    if ($0 ~ /^submenu /) {
+      st = 3
+      line = $0
+      sub(/\$menuentry_id_option/, "--class advanced --id", line)
+      sm = line "\n"; next
+    }
+    mid = mid $0 "\n"; next
+  }
+  if (st == 3) {
+    sm = sm $0 "\n"
+    if ($0 == "}") st = 4
+    next
+  }
+  post = post $0 "\n"
+}
+END {
+  if (st == 4) printf "%s%s%s%s%s", pre, sm, entry, mid, post
+  else printf "%s%s%s%s%s", pre, entry, mid, sm, post
+}
+AWKEOF
+)
+OUT=$(/bin/sh /etc/grub.d/10_linux "$@")
+printf '%s\n' "$OUT" | awk "$AWKPROG"
+chmod -x /etc/grub.d/10_linux 2>/dev/null || true
