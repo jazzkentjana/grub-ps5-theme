@@ -97,7 +97,7 @@ and write a preview image with `--preview-png`. Preview a theme without rebootin
 
 ## Credits and licenses
 
-* Code and generated artwork: [MIT](LICENSE).
+* Code and generated artwork: [MIT](LICENSE). Third-party material and trademarks: see [NOTICE](NOTICE).
 * `assets/wallpaper-default.jpg` is based on a macOS Big Sur wallpaper and is the property of Apple Inc.;
   it is **not** covered by the MIT license and is included only as a default. Replace it with your own image
   (`--wallpaper`) or remove it if you redistribute this project.

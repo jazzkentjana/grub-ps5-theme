@@ -1,0 +1,8 @@
+Third-party material and trademarks
+
+* assets/wallpaper-default.jpg is based on an Apple macOS Big Sur wallpaper and remains the property of
+  Apple Inc. It is NOT covered by the MIT license in LICENSE. It is included only as a default image;
+  replace it (install.sh --wallpaper FILE) or remove it if you redistribute this project.
+* "Ubuntu" and "Windows" and their logos are trademarks of their respective owners. The badges in the
+  generated screens are simple stylised drawings used only to identify the boot entries.
+* Fonts (Lato, DejaVu) are not included; they come from your system packages.
